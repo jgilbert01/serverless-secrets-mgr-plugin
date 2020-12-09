@@ -1,0 +1,1 @@
+# serverless-secrets-mgr-plugin
