@@ -1,0 +1,29 @@
+{
+  "name": "serverless-secrets-mgr-plugin",
+  "version": "1.0.0",
+  "description": "Serverless plugin to copy secrets from a CI/CD pipeline environment to AWS Secrets Manager.",
+  "author": "John Gilbert",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jgilbert01/serverless-secrets-mgr-plugin.git"
+  },
+  "keywords": [
+    "serverless",
+    "serverless plugin",
+    "secrets manager",
+    "aws",
+    "amazon web services",
+    "serverless.com"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint index.js",
+    "test": "npm run lint"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "aws-sdk": "^2.806.0",
+    "eslint": "^4.19.1"
+  }
+}

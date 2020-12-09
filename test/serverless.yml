@@ -1,0 +1,21 @@
+service: my-test-service
+
+provider:
+  name: aws
+
+plugins:
+  - serverless-secrets-mgr-plugin
+
+custom:
+  secrets:
+    # secretId: ${self:service}/${opt:stage}
+    environmentVariables: 
+      - ENV_VAR_1
+      - ENV_VAR_2
+
+resources:
+  Resources:
+    Secrets:
+      Type: AWS::SecretsManager::Secret
+      Properties: 
+        Name: ${self:service}/${opt:stage}
