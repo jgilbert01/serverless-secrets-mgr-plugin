@@ -18,6 +18,20 @@ const putSecrets = (serverless, options) => {
     ...serverless.service.custom.secrets,
   };
 
+  if (
+    config.variableNames === undefined ||
+    config.variableNames.length === 0
+  ) {
+    console.log('serverless-secrets-mgr-plugin: variableNames not defined. Skipping secrets upload.');
+    return;
+  }
+
+  if (config.variableNames.reduce((a, vn) => process.env[vn] === undefined, false)) {
+    console.log('serverless-secrets-mgr-plugin: One or more environment variables is not set. Skipping secrets upload.');
+    return;
+  }
+
+
   const secrets = config.variableNames.reduce((a, vn) => ({
     [vn]: process.env[vn],
     ...a,
@@ -28,5 +42,4 @@ const putSecrets = (serverless, options) => {
     SecretString: Buffer.from(JSON.stringify(secrets)).toString('base64'),
   })
     .then((data) => console.log('putSecretValue: %j', data));
-
 };

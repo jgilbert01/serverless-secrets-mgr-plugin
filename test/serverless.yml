@@ -9,9 +9,10 @@ plugins:
 custom:
   secrets:
     # secretId: ${self:service}/${opt:stage}
-    variableNames: 
+    variableNames:
       - ENV_VAR_1
       - ENV_VAR_2
+    #   - ENV_VAR_3
 
 resources:
   Resources:

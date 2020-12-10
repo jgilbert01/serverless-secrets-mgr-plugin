@@ -16,7 +16,7 @@ plugins:
 custom:
   secrets:
     # secretId: ${self:service}/${opt:stage}
-    environmentVariables: 
+    variableNames: 
       - ENV_VAR_1
       - ENV_VAR_2
 
