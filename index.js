@@ -18,16 +18,14 @@ const putSecrets = (serverless, options) => {
     ...serverless.service.custom.secrets,
   };
 
-  const secrets = config.environmentVariables.reduce((a, v) => ({
-    [v]: process.env[v],
+  const secrets = config.variableNames.reduce((a, vn) => ({
+    [vn]: process.env[vn],
     ...a,
   }), {});
 
-  const base64 = Buffer.from(JSON.stringify(secrets)).toString('base64');
-
   return serverless.getProvider('aws').request('SecretsManager', 'putSecretValue', {
     SecretId: config.secretId,
-    SecretString: base64,
+    SecretString: Buffer.from(JSON.stringify(secrets)).toString('base64'),
   })
     .then((data) => console.log('putSecretValue: %j', data));
 
