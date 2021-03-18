@@ -26,16 +26,12 @@ const putSecrets = (serverless, options) => {
     return;
   }
 
-  if (config.variableNames.reduce((a, vn) => process.env[vn] === undefined, false)) {
-    console.log('serverless-secrets-mgr-plugin: One or more environment variables is not set. Skipping secrets upload.');
-    return;
-  }
-
-
-  const secrets = config.variableNames.reduce((a, vn) => ({
-    [vn]: process.env[vn],
-    ...a,
-  }), {});
+  const secrets = config.variableNames
+    .filter((vn) => process.env[vn] === undefined)
+    .reduce((a, vn) => ({
+      [vn]: process.env[vn],
+      ...a,
+    }), {});
 
   return serverless.getProvider('aws').request('SecretsManager', 'putSecretValue', {
     SecretId: config.secretId,
