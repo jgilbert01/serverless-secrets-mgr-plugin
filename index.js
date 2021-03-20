@@ -27,7 +27,14 @@ const putSecrets = (serverless, options) => {
   }
 
   const secrets = config.variableNames
-    .filter((vn) => process.env[vn] === undefined)
+    .filter((vn) => {
+      if (process.env[vn] === undefined) {
+        console.log('serverless-secrets-mgr-plugin: missing variable: ', vn);
+        return false;
+      } else {
+        return true;
+      }
+    })
     .reduce((a, vn) => ({
       [vn]: process.env[vn],
       ...a,
