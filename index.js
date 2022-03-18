@@ -2,17 +2,28 @@
 
 const AWS = require('aws-sdk');
 
+let updated = false;
+
 class Plugin {
   constructor(serverless, options) {
-    this.hooks = {
-      'after:deploy:deploy': putSecrets.bind(null, serverless, options)
-    };
+    if (serverless.service.custom.secrets.afterDeployOnly) {
+      this.hooks = {
+        'after:deploy:deploy': putSecrets.bind(null, serverless, options)
+      };
+    } else {
+      this.hooks = {
+        'before:deploy:deploy': putSecrets.bind(null, serverless, options),
+        'after:deploy:deploy': putSecrets.bind(null, serverless, options)
+      };
+    }
   }
 }
 
 module.exports = Plugin;
 
 const putSecrets = (serverless, options) => {
+  if (updated) return;
+
   const config = {
     secretId: `${serverless.service.service}/${options.stage}`,
     ...serverless.service.custom.secrets,
@@ -40,9 +51,20 @@ const putSecrets = (serverless, options) => {
       ...a,
     }), {});
 
-  return serverless.getProvider('aws').request('SecretsManager', 'putSecretValue', {
-    SecretId: config.secretId,
-    SecretString: Buffer.from(JSON.stringify(secrets)).toString('base64'),
-  })
-    .then((data) => console.log('putSecretValue: %j', data));
+  return serverless.getProvider('aws').request('SecretsManager', 'listSecrets', {})
+    .then((data) => {
+      // console.log(data);
+      const found = data.SecretList.find((e) => e.Name === config.secretId);
+
+      if (found) {
+        return serverless.getProvider('aws').request('SecretsManager', 'putSecretValue', {
+          SecretId: config.secretId,
+          SecretString: Buffer.from(JSON.stringify(secrets)).toString('base64'),
+        })
+          .then((data) => {
+            updated = true;
+            console.log('putSecretValue: %j', data);
+          });
+      }
+    });
 };
