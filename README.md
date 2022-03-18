@@ -16,6 +16,7 @@ plugins:
 custom:
   secrets:
     # secretId: ${self:service}/${opt:stage}
+    # afterDeployOnly: true
     variableNames: 
       - ENV_VAR_1
       - ENV_VAR_2

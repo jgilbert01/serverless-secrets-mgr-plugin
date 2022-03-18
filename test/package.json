@@ -3,12 +3,12 @@
   "private": true,
   "scripts": {
     "test": "sls package -r us-east-1 -s test",
-    "dp:lcl": "ENV_VAR_1=v1 ENV_VAR_2=v2 sls deploy -v -r us-east-1",
-    "rm:lcl": "sls remove -r us-east-1"
+    "dp:lcl": "ENV_VAR_1=v1 ENV_VAR_2=v2 sls deploy --verbose -r us-east-1 -s test",
+    "rm:lcl": "sls remove -r us-east-1 -s test"
   },
   "dependencies": {},
   "devDependencies": {
-    "serverless": "2.0.0",
-    "serverless-secrets-mgr-plugin": "1.0.0"
+    "serverless": "^2.0.0",
+    "serverless-secrets-mgr-plugin": "^1.0.0"
   }
 }
