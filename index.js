@@ -51,9 +51,15 @@ const putSecrets = (serverless, options) => {
       ...a,
     }), {});
 
-  return serverless.getProvider('aws').request('SecretsManager', 'listSecrets', {})
+  return serverless.getProvider('aws').request('SecretsManager', 'listSecrets', {
+    Filters: [{
+      Key: 'name',
+      Values: [config.secretId]
+    }]
+  })
     .then((data) => {
-      // console.log(data);
+      if (config.debug) console.log(data);
+
       const found = data.SecretList.find((e) => e.Name === config.secretId);
 
       if (found) {
