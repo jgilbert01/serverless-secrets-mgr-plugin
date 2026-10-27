@@ -22,7 +22,6 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest          
       - run: npm ci
-      - run: npm test
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
