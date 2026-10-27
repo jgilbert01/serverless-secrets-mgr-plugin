@@ -1,7 +1,5 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-
 let updated = false;
 
 class Plugin {
@@ -51,26 +49,18 @@ const putSecrets = (serverless, options) => {
       ...a,
     }), {});
 
-  return serverless.getProvider('aws').request('SecretsManager', 'listSecrets', {
-    Filters: [{
-      Key: 'name',
-      Values: [config.secretId]
-    }]
+  return serverless.getProvider('aws').request('SecretsManager', 'putSecretValue', {
+    SecretId: config.secretId,
+    SecretString: Buffer.from(JSON.stringify(secrets)).toString('base64'),
   })
     .then((data) => {
-      if (config.debug) console.log(data);
-
-      const found = data.SecretList.find((e) => e.Name === config.secretId);
-
-      if (found) {
-        return serverless.getProvider('aws').request('SecretsManager', 'putSecretValue', {
-          SecretId: config.secretId,
-          SecretString: Buffer.from(JSON.stringify(secrets)).toString('base64'),
-        })
-          .then((data) => {
-            updated = true;
-            console.log('putSecretValue: %j', data);
-          });
+      updated = true;
+      console.log('putSecretValue: %j', data);
+    })
+    .catch((err) => {
+      if (err.code === 'ResourceNotFoundException') {
+        return {};
       }
+      return Promise.reject(err);
     });
 };
